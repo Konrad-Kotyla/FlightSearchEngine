@@ -1,26 +1,14 @@
+package app;
+
+import model.Flight;
+import model.Journey;
+import staticResources.FlightDatabase;
+
 import java.util.ArrayList;
 
-public class FlightDatabase {
-    private ArrayList<Flight> flights = new ArrayList<>();
-
-    public FlightDatabase() {
-        flights.add(new Flight("Warszawa", "Londyn", 319));
-        flights.add(new Flight("Londyn", "Warszawa", 289));
-        flights.add(new Flight("Warszawa", "Nowy Jork", 1749));
-        flights.add(new Flight("Nowy Jork", "Warszawa", 2099));
-        flights.add(new Flight("Londyn", "Nowy Jork", 1359));
-        flights.add(new Flight("Nowy Jork", "Londyn", 1279));
-        flights.add(new Flight("Warszawa", "Madryt", 409));
-        flights.add(new Flight("Madryt", "Warszawa", 329));
-    }
-
-    public ArrayList<Flight> getFlights() {
-        return flights;
-    }
-
-    public void setFlights(ArrayList<Flight> flights) {
-        this.flights = flights;
-    }
+public class FlightSearchControl {
+    FlightDatabase flightDatabase = new FlightDatabase();
+    ArrayList<Flight> flights = flightDatabase.getFlights();
 
     public void checkIfFlightExists(String start, String end) {
         for (Flight flight : this.flights) {
@@ -108,5 +96,18 @@ public class FlightDatabase {
                 cheapestFlight = flight;
         }
         return cheapestFlight;
+    }
+
+    public ArrayList<Journey> getFlights(String start, String end) {
+        ArrayList<Journey> results = new ArrayList<>();
+        ArrayList<Flight> starting = getFlightsFromCity(start);
+        ArrayList<Flight> ending = getFlightsToCity(end);
+        for (Flight first : starting)
+            for (Flight second : ending) {
+                if (first.getArrival().equals(second.getDeparture())) {
+                    results.add(new Journey(first, second));
+                }
+            }
+        return results;
     }
 }
